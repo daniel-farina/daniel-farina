@@ -1017,7 +1017,7 @@ async function bootSequence() {
   addHTML('<span class="prompt-line">~ $</span> <span class="cmd">ls links/</span>');
   addBlank();
   addLine('LINKS', 'section-label');
-  addHTML('  <span class="key">1.</span> <a href="https://x.com/daniel-farinax" target="_blank" rel="noopener noreferrer">x.com/daniel-farinax</a>');
+  addHTML('  <span class="key">1.</span> <a href="https://x.com/daniel_farinax" target="_blank" rel="noopener noreferrer">x.com/daniel_farinax</a>');
   addHTML('  <span class="key">2.</span> <a href="https://github.com/daniel-farina" target="_blank" rel="noopener noreferrer">github.com/daniel-farina</a>');
   addBlank();
 
@@ -1117,7 +1117,7 @@ function cmdAbout() {
 function cmdLinks() {
   addBlank();
   addLine('LINKS', 'section-label');
-  addHTML('  <span class="key">1.</span> <a href="https://x.com/daniel-farinax" target="_blank" rel="noopener noreferrer">x.com/daniel-farinax</a>');
+  addHTML('  <span class="key">1.</span> <a href="https://x.com/daniel_farinax" target="_blank" rel="noopener noreferrer">x.com/daniel_farinax</a>');
   addHTML('  <span class="key">2.</span> <a href="https://github.com/daniel-farina" target="_blank" rel="noopener noreferrer">github.com/daniel-farina</a>');
   addBlank();
   showPrompt();
