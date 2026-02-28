@@ -1,0 +1,251 @@
+:root {
+  --bg: #0c0c0c;
+  --fg: #c8c8c8;
+  --dim: #555;
+  --accent: #4ec9b0;
+  --prompt: #569cd6;
+  --link: #dcdcaa;
+  --link-hover: #fff;
+  --error: #f44747;
+  --success: #6a9955;
+  --bar-bg: #1e1e1e;
+  --bar-fg: #888;
+  --border: #333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Window chrome ── */
+.window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--border);
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  background: var(--bar-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 12px;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.titlebar-dots {
+  display: flex;
+  gap: 7px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.dot.red { background: #ff5f57; }
+.dot.yellow { background: #febc2e; }
+.dot.green { background: #28c840; }
+
+.titlebar-text {
+  flex: 1;
+  text-align: center;
+  color: var(--bar-fg);
+  font-size: 12px;
+}
+
+/* ── Terminal body ── */
+#terminal {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  scroll-behavior: smooth;
+}
+
+#terminal::-webkit-scrollbar {
+  width: 6px;
+}
+
+#terminal::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+/* ── Status bar ── */
+.statusbar {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  background: var(--bar-bg);
+  border-top: 1px solid var(--border);
+  padding: 0 12px;
+  font-size: 11px;
+  color: var(--bar-fg);
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.statusbar .status-accent {
+  color: var(--accent);
+}
+
+/* ── Lines ── */
+.line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  min-height: 1.6em;
+}
+
+.line.prompt-line {
+  color: var(--prompt);
+}
+
+.line .cmd {
+  color: var(--fg);
+}
+
+.line.blank {
+  height: 1.6em;
+}
+
+.line.comment {
+  color: var(--dim);
+  font-style: italic;
+}
+
+.line.section-label {
+  color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.line.ascii {
+  color: var(--accent);
+  line-height: 1.15;
+}
+
+.line.output {
+  color: var(--fg);
+}
+
+.line.error {
+  color: var(--error);
+}
+
+.line.success {
+  color: var(--success);
+}
+
+.line.ai-response {
+  color: var(--fg);
+  padding-left: 2ch;
+  border-left: 2px solid var(--accent);
+  margin: 2px 0;
+}
+
+.line.thinking {
+  color: var(--dim);
+}
+
+.line a {
+  color: var(--link);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--dim);
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.line a:hover {
+  color: var(--link-hover);
+  border-color: var(--link-hover);
+}
+
+.line .key {
+  color: var(--accent);
+  display: inline-block;
+  min-width: 3ch;
+}
+
+.line .flag {
+  color: var(--prompt);
+}
+
+/* ── Input line ── */
+.input-row {
+  display: flex;
+  align-items: center;
+  min-height: 1.6em;
+}
+
+.input-row .prompt-text {
+  color: var(--prompt);
+  white-space: pre;
+  flex-shrink: 0;
+}
+
+.input-row input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fg);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  caret-color: var(--fg);
+  padding: 0;
+}
+
+/* ── Boot animation ── */
+.boot-line {
+  opacity: 0;
+  animation: bootIn 0.08s ease forwards;
+}
+
+@keyframes bootIn {
+  to { opacity: 1; }
+}
+
+/* ── Scanline effect ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  z-index: 999;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  body { font-size: 12px; }
+  #terminal { padding: 12px; }
+  .titlebar-text { font-size: 11px; }
+}
