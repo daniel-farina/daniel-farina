@@ -969,18 +969,48 @@ async function destroyUI() {
   createRescueDot(overlay, matrixInterval);
 }
 
+const RESCUE_MESSAGES = [
+  'Click me if you can.',
+  'Over here, genius.',
+  'Too slow.',
+  'You call that a click?',
+  'I dare you.',
+  'Catch me if you can.',
+  'Wrong pixel.',
+  'Almost... nope.',
+  'I believe in you. Just kidding.',
+  'The exit is a lie. Or is it?',
+];
+
 function createRescueDot(overlay, matrixInterval) {
   const dot = document.createElement('div');
   dot.classList.add('rescue-dot');
   overlay.appendChild(dot);
 
+  const label = document.createElement('div');
+  label.classList.add('rescue-label');
+  overlay.appendChild(label);
+
   let dotTimer;
+  let shownRescueMessages = new Set();
+
+  function pickRescueMessage() {
+    const available = RESCUE_MESSAGES.filter((m) => !shownRescueMessages.has(m));
+    if (available.length === 0) shownRescueMessages.clear();
+    const pool = available.length > 0 ? available : RESCUE_MESSAGES;
+    const msg = pool[Math.floor(Math.random() * pool.length)];
+    shownRescueMessages.add(msg);
+    return msg;
+  }
 
   function moveDot() {
     const x = 10 + Math.random() * (window.innerWidth - 30);
     const y = 10 + Math.random() * (window.innerHeight - 30);
     dot.style.left = x + 'px';
     dot.style.top = y + 'px';
+    label.textContent = pickRescueMessage();
+    label.style.left = x + 'px';
+    label.style.top = (y - 22) + 'px';
     dotTimer = setTimeout(moveDot, 1000 + Math.random() * 2000);
   }
 

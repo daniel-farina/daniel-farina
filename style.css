@@ -413,6 +413,18 @@ body::after {
   z-index: 1001;
 }
 
+.rescue-label {
+  position: absolute;
+  color: #0f0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1001;
+  text-shadow: 0 0 6px #0f0;
+  opacity: 0.8;
+}
+
 .destruction-char {
   position: absolute;
   top: -2em;
