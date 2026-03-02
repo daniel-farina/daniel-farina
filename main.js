@@ -982,6 +982,8 @@ const RESCUE_MESSAGES = [
   'The exit is a lie. Or is it?',
 ];
 
+const BLOCKER_EMOJIS = ['🚫', '😈', '🤡', '💀', '👻', '🙈', '❌', '🫣', '🖐️', '🎪', '🤖', '👀', '🕳️', '🪤'];
+
 function createRescueDot(overlay, matrixInterval) {
   const dot = document.createElement('div');
   dot.classList.add('rescue-dot');
@@ -1003,6 +1005,31 @@ function createRescueDot(overlay, matrixInterval) {
     return msg;
   }
 
+  function spawnBlockerEmoji(x, y) {
+    const emoji = document.createElement('div');
+    emoji.classList.add('rescue-blocker');
+    emoji.textContent = BLOCKER_EMOJIS[Math.floor(Math.random() * BLOCKER_EMOJIS.length)];
+    // Offset slightly so it overlaps the dot
+    emoji.style.left = (x - 10 + Math.random() * 20) + 'px';
+    emoji.style.top = (y - 10 + Math.random() * 20) + 'px';
+    emoji.style.fontSize = (24 + Math.random() * 20) + 'px';
+    overlay.appendChild(emoji);
+    setTimeout(() => { if (emoji.parentNode) emoji.remove(); }, 1500 + Math.random() * 1500);
+  }
+
+  function spawnRandomEmoji() {
+    const emoji = document.createElement('div');
+    emoji.classList.add('rescue-blocker', 'floating');
+    emoji.textContent = BLOCKER_EMOJIS[Math.floor(Math.random() * BLOCKER_EMOJIS.length)];
+    emoji.style.left = Math.random() * window.innerWidth + 'px';
+    emoji.style.top = Math.random() * window.innerHeight + 'px';
+    emoji.style.fontSize = (30 + Math.random() * 30) + 'px';
+    overlay.appendChild(emoji);
+    setTimeout(() => { if (emoji.parentNode) emoji.remove(); }, 2000 + Math.random() * 2000);
+  }
+
+  let moveCount = 0;
+
   function moveDot() {
     const x = 10 + Math.random() * (window.innerWidth - 30);
     const y = 10 + Math.random() * (window.innerHeight - 30);
@@ -1011,6 +1038,19 @@ function createRescueDot(overlay, matrixInterval) {
     label.textContent = pickRescueMessage();
     label.style.left = x + 'px';
     label.style.top = (y - 22) + 'px';
+
+    moveCount++;
+    // 40% chance an emoji blocks the dot
+    if (Math.random() < 0.4) {
+      spawnBlockerEmoji(x, y);
+    }
+    // Scatter random emojis for chaos (ramps up over time)
+    if (moveCount > 3 && Math.random() < 0.6) {
+      for (let i = 0; i < 1 + Math.floor(moveCount / 5); i++) {
+        setTimeout(() => spawnRandomEmoji(), Math.random() * 800);
+      }
+    }
+
     dotTimer = setTimeout(moveDot, 1000 + Math.random() * 2000);
   }
 
