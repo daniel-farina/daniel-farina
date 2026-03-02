@@ -6,6 +6,71 @@ const matrixOverlay = document.getElementById('matrix-overlay');
 let chatHistory = [];
 let inputLocked = false;
 
+// ── Persistence ──
+
+function saveHistory() {
+  try {
+    localStorage.setItem('df-chat-history', JSON.stringify(chatHistory));
+  } catch { }
+}
+
+function loadHistory() {
+  try {
+    const saved = localStorage.getItem('df-chat-history');
+    if (saved) {
+      chatHistory = JSON.parse(saved);
+      return chatHistory.length > 0;
+    }
+  } catch { }
+  return false;
+}
+
+function clearHistory() {
+  chatHistory = [];
+  localStorage.removeItem('df-chat-history');
+}
+
+async function displaySavedHistory() {
+  if (chatHistory.length === 0) return;
+  addLine(`[SYS ] Recovering ${chatHistory.length} messages from local storage...`, 'success');
+  await sleep(400);
+
+  for (const msg of chatHistory) {
+    if (msg.role === 'user') {
+      addHTML(`<span class="prompt-line">~ $</span> <span class="cmd">${escapeHtml(msg.content)}</span>`);
+    } else {
+      const lines = msg.content.split('\n');
+      for (const line of lines) {
+        addLine('  ' + line, 'ai-response');
+      }
+    }
+    await sleep(50);
+  }
+
+  addLine('[SYS ] Conversation recovered.', 'success');
+  addBlank();
+}
+
+async function displayRecoveredHistory() {
+  if (chatHistory.length === 0) return;
+  addLine('[RECV] Scanning corrupted memory blocks...', 'comment');
+  await sleep(500);
+  addLine(`[RECV] Found ${chatHistory.length} recoverable messages.`, 'success');
+  await sleep(300);
+
+  for (const msg of chatHistory) {
+    if (msg.role === 'user') {
+      addHTML(`<span style="color:var(--dim)">[RECV]</span> <span class="cmd">${escapeHtml(msg.content)}</span>`);
+    } else {
+      addLine('  ' + msg.content.split('\n')[0], 'ai-response');
+    }
+    await sleep(80);
+  }
+
+  addLine('[SYS ] All data recovered.', 'success');
+  addBlank();
+}
+
 // ── Helpers ──
 
 function scrollBottom() {
@@ -386,6 +451,7 @@ async function streamChat(message, onDone) {
   setStatus('streaming...');
 
   chatHistory.push({ role: 'user', content: message });
+  saveHistory();
 
   const thinkingEl = addLine('  thinking...', 'thinking');
   let dots = 0;
@@ -468,6 +534,7 @@ async function streamChat(message, onDone) {
     }
 
     chatHistory.push({ role: 'assistant', content: fullText || 'No response.' });
+    saveHistory();
   } catch (e) {
     clearInterval(thinkInterval);
     if (thinkingEl.parentNode) thinkingEl.remove();
@@ -926,7 +993,7 @@ function createRescueDot(overlay, matrixInterval) {
   });
 }
 
-function restoreUI(overlay, matrixInterval) {
+async function restoreUI(overlay, matrixInterval) {
   clearInterval(matrixInterval);
   overlay.remove();
 
@@ -936,9 +1003,8 @@ function restoreUI(overlay, matrixInterval) {
   win.style.opacity = '';
   win.style.transition = '';
 
-  // Clear terminal
+  // Clear terminal (not history)
   terminal.innerHTML = '';
-  chatHistory = [];
 
   // Reset logo
   logo.speed = 1;
@@ -959,12 +1025,14 @@ function restoreUI(overlay, matrixInterval) {
   document.body.classList.remove('fx-idle', 'fx-creepy', 'fx-matrix');
   if (matrixOverlay) matrixOverlay.innerHTML = '';
 
-  // Reboot message
+  // Recovery sequence
   addLine('[SYS ] Terminal recovered from catastrophic failure.', 'success');
   addLine('[SYS ] All processes restarted.', 'success');
   addBlank();
-  showPrompt();
 
+  await displayRecoveredHistory();
+
+  showPrompt();
   startDestructionTimer();
   startIdleTimer();
 }
@@ -1020,6 +1088,11 @@ async function bootSequence() {
   addHTML('  <span class="key">1.</span> <a href="https://x.com/daniel_farinax" target="_blank" rel="noopener noreferrer">x.com/daniel_farinax</a>');
   addHTML('  <span class="key">2.</span> <a href="https://github.com/daniel-farina" target="_blank" rel="noopener noreferrer">github.com/daniel-farina</a>');
   addBlank();
+
+  // Restore saved conversation if any
+  if (loadHistory()) {
+    await displaySavedHistory();
+  }
 
   showPrompt();
   startIdleTimer();
@@ -1085,6 +1158,7 @@ const COMMANDS = {
   links: cmdLinks,
   chat: cmdChat,
   clear: cmdClear,
+  new: cmdNew,
   whoami: cmdWhoami,
   neofetch: cmdNeofetch,
 };
@@ -1098,6 +1172,7 @@ function cmdHelp() {
   addHTML('  <span class="key">chat</span>     Talk to the AI assistant');
   addHTML('  <span class="key">neofetch</span> System info');
   addHTML('  <span class="key">clear</span>    Clear terminal');
+  addHTML('  <span class="key">new</span>      New conversation (clear history)');
   addBlank();
   addLine('Or just type a question to chat with the AI.', 'comment');
   addBlank();
@@ -1125,6 +1200,15 @@ function cmdLinks() {
 
 function cmdClear() {
   terminal.innerHTML = '';
+  showPrompt();
+}
+
+function cmdNew() {
+  clearHistory();
+  terminal.innerHTML = '';
+  addLine('[SYS ] Conversation history cleared.', 'success');
+  addLine('[SYS ] Starting fresh session.', 'success');
+  addBlank();
   showPrompt();
 }
 
@@ -1216,7 +1300,6 @@ function chatLoop() {
       if (msg.toLowerCase() === 'exit') {
         addLine('Exited chat mode.', 'comment');
         addBlank();
-        chatHistory = [];
         showPrompt();
         return;
       }
@@ -1238,7 +1321,9 @@ function chatLoop() {
 
 async function handleCommand(cmd) {
   resetDestructionTimer();
-  const lower = cmd.toLowerCase();
+  // Strip leading / for slash commands
+  const normalized = cmd.replace(/^\//, '');
+  const lower = normalized.toLowerCase();
 
   // Check secret logo commands first
   const secretResult = trySecretCommand(cmd);
