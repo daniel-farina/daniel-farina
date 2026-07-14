@@ -26,7 +26,7 @@ Powerful agentic side panel that can organize tabs, run scheduled/background tas
 ### [3Dream](https://3dream.xyz) — AI Home Design Studio
 Browser-based floor plan tool for designing homes in 2D & 3D with first-person walkthroughs, AI-assisted design, and photorealistic renders. See it, walk it, share it — instantly.
 
-<img width="700" height="880" alt="image" src="https://github.com/user-attachments/assets/ff234aac-0b38-4743-baeb-dab2f2a21f9e" />
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/ff234aac-0b38-4743-baeb-dab2f2a21f9e" />
 
 
 ...plus ~20 other experiments running in parallel because building is fun.
