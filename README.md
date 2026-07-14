@@ -8,6 +8,8 @@ I'm obsessed with building AI tools that feel *native* — fast, private, and de
 
 ### [XNative](https://xnative.app) — Native Grok for Mac
 A clean, native macOS app (macOS 15+) for chatting with Grok in the context of your real projects and folders. Formerly AskHere.
+<img width="700"  alt="image" src="https://github.com/user-attachments/assets/ce81d327-2738-483b-b9d3-5f950d6e40d2" />
+
 
 **Just shipped (last 4 days):**
 - Full support for **any local models** (LM Studio, Ollama, or any OpenAI-compatible endpoint)
@@ -17,11 +19,15 @@ A clean, native macOS app (macOS 15+) for chatting with Grok in the context of y
 
 ### [Xplor](https://xplor.sh) — The Grok-Native Browser
 A free, open-source Chromium browser with Grok built into *every tab*. 
+<img width="700" alt="image" src="https://github.com/user-attachments/assets/381ec248-53f8-442a-a6ae-e159b7a46225" />
 
 Powerful agentic side panel that can organize tabs, run scheduled/background tasks, summarize pages, and even build & iterate on apps live. MCP-ready for external agents (Grok, Claude, Cursor, etc.). Cross-platform (macOS, Windows, Linux).
 
 ### [3Dream](https://3dream.xyz) — AI Home Design Studio
 Browser-based floor plan tool for designing homes in 2D & 3D with first-person walkthroughs, AI-assisted design, and photorealistic renders. See it, walk it, share it — instantly.
+
+<img width="700" height="880" alt="image" src="https://github.com/user-attachments/assets/ff234aac-0b38-4743-baeb-dab2f2a21f9e" />
+
 
 ...plus ~20 other experiments running in parallel because building is fun.
 
